@@ -49,3 +49,13 @@ class ParticleSystem:
                     			self.pos[i, d] = -half[d] - self.pos[i, d]
                     			self.vel[i, d] = -self.vel[i, d]
 		return self.pos, self.vel
+
+    	def simulate(self):
+        	new_pos = np.zeros((self.num_steps, self.num_particles, self.dim))
+        	for i in range(self.num_steps):
+            		new_pos[i] = self.pos
+            		acc = self.update_lj(self.pos, self.num_particles, self.dim, self.L)
+            		self.vel = self.v(acc)
+            		self.pos = self.r()
+            		self.reflect()
+        	return new_pos
