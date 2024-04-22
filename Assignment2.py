@@ -31,3 +31,10 @@ class ParticleSystem:
                     	r13 = (1/r)**13
                     	forces[i] += 24 * (-2*r13 + r7) * r_unit
         	return forces
+
+    	def v(self, acc: np.ndarray):
+        	return self.vel + (self.dt / 2) * acc
+    
+    	def r(self):
+        	return self.pos + self.vel * self.dt
+ 
