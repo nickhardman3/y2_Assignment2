@@ -38,3 +38,14 @@ class ParticleSystem:
     	def r(self):
         	return self.pos + self.vel * self.dt
  
+    	def reflect(self):
+        	half = self.L / 2
+        	for i in range(self.num_particles):
+            		for d in range(self.dim):
+                		if self.pos[i, d] >= half[d]:
+                    			self.pos[i, d] = self.L[d] - self.pos[i, d]
+                    			self.vel[i, d] = -self.vel[i, d]
+                		elif self.pos[i, d] <= -half[d]:
+                    			self.pos[i, d] = -half[d] - self.pos[i, d]
+                    			self.vel[i, d] = -self.vel[i, d]
+		return self.pos, self.vel
