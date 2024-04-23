@@ -2,6 +2,11 @@ import numpy as np
 import numba as nb
 import matplotlib.pyplot as plt
 
+kB = 1.3806452e-23
+sigma = 0.3345e-9
+epsilon = 125.7*kB
+tau = np.sqrt(sigma**2 / epsilon)
+
 class ParticleSystem:
 
 	def __init__(self, num_particles: int, dim: int, dt: float, num_steps: int, L: np.ndarray):
