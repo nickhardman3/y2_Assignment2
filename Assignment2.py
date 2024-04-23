@@ -79,3 +79,22 @@ class ParticleSystem:
 			self.pos = self.r()
 			self.reflect()
 		return new_pos
+
+	def simulate2(self):
+		pressures = []
+		temperatures = []
+		for i in range(self.num_steps):
+			acc = self.update_lj(self.pos, self.num_particles, self.dim, self.L)
+			self.vel = self.v(acc)
+			self.pos = self.r()
+			self.reflect()
+
+			pressure_x = self.calculate_pressure()
+			temperature = self.calculate_temperature()
+			pressures.append(pressure_x)
+			temperatures.append(temperature)
+
+		avg_pressure = np.mean(pressures)
+		avg_temperature = np.mean(temperatures)
+
+		return avg_pressure, avg_temperature
