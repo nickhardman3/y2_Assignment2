@@ -66,7 +66,7 @@ class ParticleSystem:
 		pos = self.pos / sigma
 		vel = self.vel * (sigma/tau)
 		kinetic_energy = 0.5 * np.sum(vel ** 2)
-		temperature = (2 / (3 * self.num_particles*kB)) * (kinetic_energy))
+		temperature = (2 / (3 * self.num_particles*kB)) * (kinetic_energy)
 
 		return temperature
 
