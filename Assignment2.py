@@ -50,6 +50,26 @@ class ParticleSystem:
 					self.vel[i, d] = -self.vel[i, d]
 		return self.pos, self.vel
 
+	def calculate_pressure(self):
+		L = self.L / sigma
+		pos = self.pos / sigma
+		vel = self.vel * (sigma/tau)
+		area = L[1] * L[2]  
+		crossing_momentum = np.sum(vel[:, 0][pos[:, 0] >= L[0] / 2])  
+		t = self.dt / tau
+		pressure_x = crossing_momentum / (area * t)
+
+		return pressure_x
+
+	def calculate_temperature(self):
+		L = self.L / sigma
+		pos = self.pos / sigma
+		vel = self.vel * (sigma/tau)
+		kinetic_energy = 0.5 * np.sum(vel ** 2)
+		temperature = (2 / (3 * self.num_particles*kB)) * (kinetic_energy))
+
+		return temperature
+
 	def simulate(self):
 		new_pos = np.zeros((self.num_steps, self.num_particles, self.dim))
 		for i in range(self.num_steps):
