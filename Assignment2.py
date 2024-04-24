@@ -60,7 +60,7 @@ class ParticleSystem:
 		pos = self.pos / sigma
 		vel = self.vel * (sigma/tau)
 		area = L[1] * L[2]  
-		crossing_momentum = np.sum(vel[:, 0][pos[:, 0] >= L[0] / 2])  
+		crossing_momentum = np.sum(vel[:, 0][np.logical_and(pos[:, 0] >= L[0] / 2, vel[:, 0] > 0)])
 		t = self.dt / tau
 		pressure_x = crossing_momentum / (area * t)
 
