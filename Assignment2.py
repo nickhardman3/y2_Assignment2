@@ -10,6 +10,18 @@ tau = np.sqrt(sigma**2 / epsilon)
 class ParticleSystem:
 
 	def __init__(self, num_particles: int, dim: int, dt: float, num_steps: int, L: np.ndarray):
+
+	"""
+        Initialize the ParticleSystem object.
+
+        Args:
+            num_particles (int): Number of particles in the system.
+            dim (int): Dimensionality of the system.
+            dt (float): Timestep for the simulation.
+            num_steps (int): Number of simulation steps to perform.
+            L (np.ndarray): Array representing the size of the system in each dimension.
+        """
+
 		self.num_particles = num_particles
 		self.dim = dim
 		self.dt = dt
@@ -20,11 +32,33 @@ class ParticleSystem:
 		self.vel = np.zeros((num_particles, dim))
 
 	def initialize_particles(self, initial_positions: np.ndarray):
+
+        """
+        Initialize the positions of the particles.
+
+        Args:
+            initial_positions (np.ndarray): Initial positions of the particles.
+        """
+
 		self.pos = initial_positions
 
 	@staticmethod
 	@nb.njit(parallel=True, fastmath=True)
 	def update_lj(pos: np.ndarray, num_particles: int, dim: int, L: np.ndarray):
+
+  	"""
+        Update the forces on particles based on Lennard-Jones potential.
+
+        Args:
+            pos (np.ndarray): Array of particle positions.
+            num_particles (int): Number of particles.
+            dim (int): Dimensionality of the system.
+            L (np.ndarray): Array representing the size of the system in each dimension.
+
+        Returns:
+            np.ndarray: Array of forces acting on particles.
+        """
+
 		forces = np.zeros((num_particles, dim))
 		for i in nb.prange(num_particles):
 			for j in range(num_particles):
@@ -38,12 +72,39 @@ class ParticleSystem:
 		return forces
 
 	def v(self, acc: np.ndarray):
+
+        """
+        Calculate particle velocities.
+
+        Args:
+            acc (np.ndarray): Array of particle accelerations.
+
+        Returns:
+            np.ndarray: Updated velocities.
+        """
+
 		return self.vel + (self.dt / 2) * acc
 
 	def r(self):
+
+        """
+        Update particle positions.
+
+        Returns:
+            np.ndarray: Updated positions.
+        """
+
 		return self.pos + self.vel * self.dt
 
 	def reflect(self):
+
+        """
+        Reflect particles at system boundaries.
+
+        Returns:
+            Tuple[np.ndarray, np.ndarray]: Updated positions and velocities.
+        """
+
 		half = self.L / 2
 		for i in range(self.num_particles):
 			for d in range(self.dim):
@@ -56,6 +117,14 @@ class ParticleSystem:
 		return self.pos, self.vel
 
 	def calculate_pressure(self):
+
+        """
+        Calculate pressure in the system.
+
+        Returns:
+            float: Pressure in the system.
+        """
+
 		L = self.L / sigma
 		pos = self.pos / sigma
 		vel = self.vel * (sigma/tau)
@@ -67,6 +136,14 @@ class ParticleSystem:
 		return pressure_x
 
 	def calculate_temperature(self):
+
+        """
+        Calculate temperature in the system.
+
+        Returns:
+            float: Temperature in the system.
+        """
+
 		L = self.L / sigma
 		pos = self.pos / sigma
 		vel = self.vel * (sigma/tau)
@@ -76,6 +153,14 @@ class ParticleSystem:
 		return temperature
 
 	def simulate(self):
+
+        """
+        Perform the simulation.
+
+        Returns:
+            np.ndarray: Array of particle positions over simulation steps.
+        """
+
 		new_pos = np.zeros((self.num_steps, self.num_particles, self.dim))
 		for i in range(self.num_steps):
 			new_pos[i] = self.pos
@@ -86,6 +171,14 @@ class ParticleSystem:
 		return new_pos
 
 	def simulate2(self):
+
+        """
+        Perform the simulation and calculate average pressure and temperature.
+
+        Returns:
+            Tuple[float, float]: Average pressure and temperature.
+        """
+
 		pressures = []
 		temperatures = []
 		for i in range(self.num_steps):
